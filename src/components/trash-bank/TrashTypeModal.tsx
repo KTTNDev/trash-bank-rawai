@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Save } from 'lucide-react';
+import { X, Save, Tag, DollarSign, Package, Layers, Power } from 'lucide-react';
 import { TrashType } from '@/types/trashBank';
 import { addTrashType, updateTrashType } from '@/lib/trash-service';
 
@@ -21,7 +21,6 @@ export default function TrashTypeModal({ isOpen, onClose, onSuccess, editData }:
     isActive: true
   });
 
-  // ถ้ามีการส่งข้อมูลมาแก้ไข ให้เอาข้อมูลมาใส่ในฟอร์ม
   useEffect(() => {
     if (editData) {
       setFormData(editData);
@@ -30,110 +29,152 @@ export default function TrashTypeModal({ isOpen, onClose, onSuccess, editData }:
     }
   }, [editData, isOpen]);
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    if (editData?.id) {
-      await updateTrashType(editData.id, formData);
-    } else {
-      // ลองทำความสะอาดข้อมูลก่อนส่ง (ลบ id ออกถ้ามันเป็นค่าว่าง)
-      const { id, ...cleanData } = formData;
-      await addTrashType(cleanData as any); 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (editData?.id) {
+        await updateTrashType(editData.id, formData);
+      } else {
+        const { id, ...cleanData } = formData;
+        await addTrashType(cleanData as any); 
+      }
+      onSuccess();
+      onClose();
+    } catch (error: any) {
+      console.error("Firebase Save Error:", error);
+      alert('เกิดข้อผิดพลาด: ' + (error.message || 'ตรวจสอบระบบอีกครั้ง'));
     }
-    onSuccess();
-    onClose();
-  } catch (error: any) {
-    // 🔴 แก้ตรงนี้เพื่อให้เห็นสาเหตุที่แท้จริง
-    console.error("Firebase Save Error:", error);
-    alert('เกิดข้อผิดพลาด: ' + (error.message || 'ตรวจสอบ Console (F12)'));
-  }
-};
+  };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-      <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-        {/* Header */}
-        <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-emerald-50/50">
-          <h2 className="text-xl font-black text-slate-800">
-            {editData?.id ? '📝 แก้ไขข้อมูลขยะ' : '✨ เพิ่มประเภทขยะใหม่'}
-          </h2>
-          <button onClick={onClose} className="p-2 hover:bg-white rounded-full transition-colors">
-            <X className="w-5 h-5 text-slate-400" />
-          </button>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-all">
+      <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+        
+        {/* Header: ดีไซน์แบบ Modern Emerald */}
+        <div className="relative p-8 bg-emerald-600 text-white overflow-hidden">
+          <div className="absolute -right-6 -top-6 opacity-10">
+            <Package className="w-32 h-32 rotate-12" />
+          </div>
+          <div className="relative z-10 flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-black tracking-tight">
+                {editData?.id ? 'แก้ไขข้อมูลขยะ' : 'เพิ่มประเภทขยะใหม่'}
+              </h2>
+              <p className="text-emerald-100 text-[10px] font-bold uppercase tracking-widest mt-1 opacity-80">
+                Trash Type Configuration System
+              </p>
+            </div>
+            <button 
+              onClick={onClose} 
+              className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all shadow-lg"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-8 space-y-5">
-          <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">ชื่อประเภทขยะ</label>
-            <input 
-              required
-              type="text"
-              className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-bold"
-              placeholder="เช่น พลาสติกใส, กระป๋องอลูมิเนียม"
-              value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">ราคา (บาท)</label>
+        {/* Form Body */}
+        <form onSubmit={handleSubmit} className="p-10 space-y-6">
+          
+          {/* ชื่อประเภทขยะ */}
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">ชื่อประเภทขยะ</label>
+            <div className="relative">
+              <Tag className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
               <input 
                 required
-                type="number"
-                step="0.01"
-                className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-bold"
-                value={formData.pricePerUnit}
-                onChange={(e) => setFormData({...formData, pricePerUnit: parseFloat(e.target.value)})}
+                type="text"
+                className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-bold text-slate-700"
+                placeholder="เช่น พลาสติกใส, กระป๋องอลูมิเนียม"
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
               />
             </div>
-            <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">หน่วยเรียก</label>
+          </div>
+
+          <div className="grid grid-cols-2 gap-5">
+            {/* ราคาต่อหน่วย */}
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">ราคา (บาท)</label>
+              <div className="relative">
+                <DollarSign className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-500" />
+                <input 
+                  required
+                  type="number"
+                  step="0.01"
+                  className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-black text-xl"
+                  value={formData.pricePerUnit || ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setFormData({...formData, pricePerUnit: val === "" ? 0 : parseFloat(val)})
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* หน่วยเรียก */}
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">หน่วยเรียก</label>
+              <div className="relative">
+                <Package className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
+                <select 
+                  className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-bold appearance-none cursor-pointer"
+                  value={formData.unit}
+                  onChange={(e) => setFormData({...formData, unit: e.target.value})}
+                >
+                  <option value="กก.">กก.</option>
+                  <option value="ชิ้น">ชิ้น</option>
+                  <option value="เครื่อง">เครื่อง</option>
+                  <option value="ขวด">ขวด</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* หมวดหมู่ */}
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">หมวดหมู่ขยะ</label>
+            <div className="relative">
+              <Layers className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
               <select 
-                className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-bold"
-                value={formData.unit}
-                onChange={(e) => setFormData({...formData, unit: e.target.value})}
+                className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-bold appearance-none cursor-pointer"
+                value={formData.category}
+                onChange={(e) => setFormData({...formData, category: e.target.value})}
               >
-                <option value="กก.">กก.</option>
-                <option value="ชิ้น">ชิ้น</option>
-                <option value="เครื่อง">เครื่อง</option>
-                <option value="ขวด">ขวด</option>
+                <option value="ขยะรีไซเคิล">ขยะรีไซเคิล</option>
+                <option value="ขยะอิเล็กทรอนิกส์">ขยะอิเล็กทรอนิกส์</option>
+                <option value="ของเก่าอื่นๆ">ของเก่าอื่นๆ</option>
               </select>
             </div>
           </div>
 
-          <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">หมวดหมู่</label>
-            <select 
-              className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-bold"
-              value={formData.category}
-              onChange={(e) => setFormData({...formData, category: e.target.value})}
-            >
-              <option value="ขยะรีไซเคิล">ขยะรีไซเคิล</option>
-              <option value="ขยะอิเล็กทรอนิกส์">ขยะอิเล็กทรอนิกส์</option>
-              <option value="ของเก่าอื่นๆ">ของเก่าอื่นๆ</option>
-            </select>
+          {/* สวิตช์เปิด/ปิดสถานะ */}
+          <div 
+            onClick={() => setFormData({...formData, isActive: !formData.isActive})}
+            className={`p-4 rounded-3xl border-2 cursor-pointer transition-all flex items-center justify-between ${
+              formData.isActive 
+              ? 'bg-emerald-50 border-emerald-100 text-emerald-700' 
+              : 'bg-slate-50 border-slate-100 text-slate-400'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-xl ${formData.isActive ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-400'}`}>
+                <Power className="w-4 h-4" />
+              </div>
+              <span className="font-black text-sm uppercase tracking-widest">สถานะการรับซื้อ</span>
+            </div>
+            <span className="font-black text-xs">{formData.isActive ? 'เปิดรับซื้อ' : 'ปิดชั่วคราว'}</span>
           </div>
 
-          <div className="flex items-center gap-3 pt-2">
-            <input 
-              type="checkbox"
-              id="isActive"
-              className="w-5 h-5 rounded-lg border-slate-300 text-emerald-600 focus:ring-emerald-500"
-              checked={formData.isActive}
-              onChange={(e) => setFormData({...formData, isActive: e.target.checked})}
-            />
-            <label htmlFor="isActive" className="text-sm font-bold text-slate-600 cursor-pointer">เปิดรับซื้อรายการนี้</label>
-          </div>
-
+          {/* ปุ่มบันทึก */}
           <button 
             type="submit"
-            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black shadow-lg shadow-emerald-100 transition-all flex items-center justify-center gap-2 mt-4"
+            className="w-full py-5 bg-slate-900 hover:bg-emerald-600 text-white rounded-[2rem] font-black text-lg shadow-2xl shadow-slate-200 transition-all flex items-center justify-center gap-3 mt-4 group"
           >
-            <Save className="w-5 h-5" /> บันทึกข้อมูล
+            <Save className="w-6 h-6 group-hover:scale-110 transition-transform" />
+            {editData?.id ? 'อัปเดตข้อมูลราคา' : 'เพิ่มรายการใหม่'}
           </button>
         </form>
       </div>

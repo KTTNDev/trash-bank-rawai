@@ -1,140 +1,141 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  PieChart, Pie, Cell, Legend 
-} from 'recharts';
-import { Scale, Banknote, History, BarChart3, TrendingUp, Award } from 'lucide-react';
+  Users, BadgeDollarSign, Receipt, BarChart3, 
+  Settings, LogOut, Recycle, ChevronRight, LayoutDashboard 
+} from 'lucide-react';
 import { getGlobalStats } from '@/lib/trash-service';
 
-const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
-
-export default function AdminDashboard() {
+export default function AdminDashboardPage() {
+  const router = useRouter();
   const [stats, setStats] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getGlobalStats().then(res => {
-      setStats(res);
-      setLoading(false);
-    });
+    const fetchStats = async () => {
+      const data = await getGlobalStats();
+      setStats(data);
+    };
+    fetchStats();
   }, []);
 
-  if (loading) return <div className="p-20 text-center font-black text-slate-400 animate-pulse">กำลังประมวลผลสถิติจากฐานข้อมูล...</div>;
+  const handleLogout = () => {
+    localStorage.removeItem('isAdminLoggedIn'); // ลบบัตรผ่านออก [cite: 2026-02-25]
+    router.push('/admin/login'); // เตะกลับหน้า Login
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 md:p-10 font-sans">
-      <div className="max-w-7xl mx-auto space-y-10">
+    <div className="min-h-screen bg-[#F8FAFC] pb-20 font-sans text-slate-900">
+      
+      {/* 1. Header: Greeting & Logout */}
+      <div className="bg-slate-900 pt-12 pb-32 px-6 rounded-b-[4rem] relative overflow-hidden shadow-2xl">
+        <div className="absolute top-0 right-0 p-10 opacity-5 text-white">
+          <Settings className="w-64 h-64 rotate-12" />
+        </div>
+        <div className="max-w-6xl mx-auto flex justify-between items-center relative z-10">
+          <div className="flex items-center gap-4">
+             <div className="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                <LayoutDashboard className="w-8 h-8" />
+             </div>
+             <div>
+                <h1 className="text-2xl font-black text-white leading-none">สวัสดี แอดมินฟลุ๊ค</h1>
+                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em] mt-2">Rawai Trash Bank Command Center</p>
+             </div>
+          </div>
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-2 bg-white/10 hover:bg-rose-500/20 text-white px-5 py-3 rounded-2xl transition-all border border-white/10 font-black text-xs uppercase tracking-widest group"
+          >
+            <LogOut className="w-4 h-4 group-hover:scale-110 transition-transform" /> ออกจากระบบ
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6 -mt-16 space-y-8 relative z-20">
         
-        {/* 1. Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight">ศูนย์สรุปผลข้อมูล</h1>
-            <p className="text-slate-500 font-bold uppercase text-xs tracking-[0.3em] mt-2 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-emerald-500" /> Executive Command Center
-            </p>
-          </div>
-          <div className="bg-white px-6 py-3 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-3">
-            <div className="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></div>
-            <span className="text-sm font-black text-slate-700 uppercase">Live Data Connected</span>
-          </div>
+        {/* 2. Real-time Summary Bar */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <SummaryCard label="น้ำหนักรวม" value={(stats?.totalWeight / 1000).toFixed(2) || '0'} unit="ตัน" color="bg-emerald-500" />
+          <SummaryCard label="สมาชิกทั้งหมด" value={stats?.totalTransactions || '0'} unit="ราย" color="bg-blue-500" />
+          <SummaryCard label="ยอดหมุนเวียน" value={stats?.totalMoney?.toLocaleString() || '0'} unit="฿" color="bg-amber-500" />
         </div>
 
-        {/* 2. Big Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <StatCard 
-            icon={<Scale className="w-8 h-8" />} 
-            label="ปริมาณขยะสะสม" 
-            value={`${stats.totalWeight.toLocaleString()} กก.`} 
-            color="bg-emerald-500" 
-            sub="น้ำหนักรวมจากทุกประเภท"
+        {/* 3. Main Navigation Grid (ศุนย์รวมเมนู) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <MenuCard 
+            icon={<Users className="w-8 h-8" />} 
+            title="จัดการสมาชิก" 
+            desc="ลงทะเบียน แก้ไข ค้นหาชื่อชาวบ้าน"
+            color="text-blue-600"
+            onClick={() => router.push('/admin/members')} 
           />
-          <StatCard 
-            icon={<Banknote className="w-8 h-8" />} 
-            label="เงินหมุนเวียนรวม" 
-            value={`${stats.totalMoney.toLocaleString()} ฿`} 
-            color="bg-blue-500" 
-            sub="จ่ายคืนสู่ประชาชนชาวราไวย์"
+          
+          <MenuCard 
+            icon={<BadgeDollarSign className="w-8 h-8" />} 
+            title="ตั้งราคาขยะ" 
+            desc="ปรับราคากลางตามประกาศเทศบาล"
+            color="text-emerald-600"
+            onClick={() => router.push('/admin/trash-types')} 
           />
-          <StatCard 
-            icon={<History className="w-8 h-8" />} 
-            label="จำนวนธุรกรรม" 
-            value={`${stats.totalTransactions} ครั้ง`} 
-            color="bg-amber-500" 
-            sub="การฝากขยะทั้งหมดในระบบ"
+
+          <MenuCard 
+            icon={<Recycle className="w-8 h-8" />} 
+            title="รับฝากขยะ" 
+            desc="หน้าบันทึกรายการฝาก (ฝั่งเจ้าหน้าที่)"
+            color="text-amber-600"
+            onClick={() => router.push('/staff/record')} 
           />
+
+          <MenuCard 
+            icon={<BarChart3 className="w-8 h-8" />} 
+            title="รายงานสถิติ" 
+            desc="ดูข้อมูลวิเคราะห์และผลงานโครงการ"
+            color="text-purple-600"
+            onClick={() => router.push('/admin/reports')} 
+          />
+
         </div>
-
-        {/* 3. Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* กราฟวงกลม: สัดส่วนประเภทขยะ */}
-          <div className="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100">
-            <h3 className="text-lg font-black text-slate-800 mb-8 flex items-center gap-2">
-              <TrendingUp className="text-emerald-500" /> สัดส่วนประเภทขยะที่จัดเก็บได้
-            </h3>
-            <div className="h-[350px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={stats.chartData}
-                    innerRadius={80}
-                    outerRadius={120}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {stats.chartData.map((_: any, index: number) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 10px 20px rgba(0,0,0,0.05)' }}
-                  />
-                  <Legend iconType="circle" />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* กราฟแท่ง: ปริมาณขยะแยกตามรายการ */}
-          <div className="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100">
-            <h3 className="text-lg font-black text-slate-800 mb-8 flex items-center gap-2">
-              <Award className="text-blue-500" /> สรุปน้ำหนักแยกตามประเภท (กก.)
-            </h3>
-            <div className="h-[350px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stats.chartData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fontWeight: 'bold' }} />
-                  <YAxis axisLine={false} tickLine={false} />
-                  <Tooltip 
-                    cursor={{ fill: '#f8fafc' }}
-                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 10px 20px rgba(0,0,0,0.05)' }}
-                  />
-                  <Bar dataKey="value" fill="#3b82f6" radius={[10, 10, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   );
 }
 
-// Sub-component สำหรับการ์ดสถิติ
-function StatCard({ icon, label, value, color, sub }: any) {
+// Sub-components เพื่อความสะอาดของโค้ด
+function SummaryCard({ label, value, unit, color }: any) {
   return (
-    <div className="bg-white p-8 rounded-[3rem] shadow-xl shadow-slate-200/50 border border-slate-50 flex items-center gap-6 group hover:-translate-y-1 transition-all">
-      <div className={`${color} p-5 rounded-[2rem] text-white shadow-lg shadow-current/20 group-hover:scale-110 transition-transform`}>
-        {icon}
-      </div>
+    <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 flex items-center justify-between overflow-hidden relative">
+      <div className={`absolute -right-4 -bottom-4 w-24 h-24 ${color} opacity-5 rounded-full`} />
       <div>
         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{label}</p>
-        <h2 className="text-3xl font-black text-slate-900 leading-none mb-1">{value}</h2>
-        <p className="text-xs text-slate-400 font-medium">{sub}</p>
+        <div className="flex items-baseline gap-2">
+          <span className="text-3xl font-black text-slate-900 tabular-nums">{value}</span>
+          <span className="text-xs font-bold text-slate-400 uppercase">{unit}</span>
+        </div>
+      </div>
+      <div className={`w-12 h-12 ${color} rounded-2xl flex items-center justify-center text-white shadow-lg`}>
+         <Receipt className="w-6 h-6" />
       </div>
     </div>
+  );
+}
+
+function MenuCard({ icon, title, desc, color, onClick }: any) {
+  return (
+    <button 
+      onClick={onClick}
+      className="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 flex flex-col items-start text-left hover:shadow-2xl hover:-translate-y-2 transition-all group relative overflow-hidden"
+    >
+      <div className={`mb-6 p-4 rounded-2xl bg-slate-50 ${color} group-hover:scale-110 transition-transform`}>
+        {icon}
+      </div>
+      <div className="space-y-2">
+        <h4 className="font-black text-xl text-slate-900 flex items-center gap-2">
+          {title} <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+        </h4>
+        <p className="text-xs font-medium text-slate-400 leading-relaxed">{desc}</p>
+      </div>
+    </button>
   );
 }

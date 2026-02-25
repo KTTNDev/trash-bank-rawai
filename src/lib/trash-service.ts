@@ -3,7 +3,7 @@ import { db } from './firebase';
 import { 
   collection, doc, setDoc, getDoc, getDocs, 
   updateDoc, serverTimestamp, query, orderBy, 
-  where, runTransaction, addDoc, limit 
+  where, runTransaction, addDoc, limit , deleteDoc
 } from 'firebase/firestore';
 import { TrashType, TrashMember, TrashTransaction } from '@/types/trashBank';
 
@@ -26,7 +26,10 @@ export const registerMember = async (member: Omit<TrashMember, 'totalBalance' | 
     updatedAt: serverTimestamp()
   });
 };
-
+export const deleteMember = async (id: string) => {
+  const memberRef = doc(db, 'members', id);
+  return await deleteDoc(memberRef);
+};
 // --- 2. จัดการประเภทขยะ (Trash Type Management) ---
 
 // ดึงรายการขยะและราคา

@@ -1,96 +1,155 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Recycle, Save, X, Trash2 } from 'lucide-react';
-import { getTrashTypes, updateTrashType, addTrashType } from '@/lib/trash-service'; // เดี๋ยวจารย์เพิ่มฟังก์ชันพวกนี้ให้ใน Service ครับ
-import { TrashType } from '@/types/trashBank';
-import TrashTypeModal from '@/components/trash-bank/TrashTypeModal';
+import React, { useEffect, useState } from 'react';
+import { 
+  BadgeDollarSign, Plus, Search, Edit2, Trash2, 
+  ArrowLeft, Tag, Info, Power, PowerOff
+} from 'lucide-react';
+import TrashTypeModal from '../../../components/trash-bank/TrashTypeModal';
 
-export default function TrashTypeManagement() {
-  const [types, setTypes] = useState<TrashType[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingType, setEditingType] = useState<TrashType | null>(null);
+import { useRouter } from 'next/navigation';
+import { getTrashTypes, deleteTrashType } from '@/lib/trash-service';
+import { TrashType } from '@/types/trashBank';
+
+export default function TrashPriceManagementPage() {
+  const router = useRouter();
+  const [trashTypes, setTrashTypes] = useState<TrashType[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // ฟังก์ชันดึงข้อมูลมาแสดงผล
-  const loadTypes = async () => {
+  const loadTrashTypes = async () => {
     setLoading(true);
     const data = await getTrashTypes();
-    setTypes(data);
+    setTrashTypes(data);
     setLoading(false);
   };
 
   useEffect(() => {
-    loadTypes();
+    loadTrashTypes();
   }, []);
+const [isModalOpen, setIsModalOpen] = useState(false);
+const [selectedType, setSelectedType] = useState<TrashType | null>(null);
 
-  const handleOpenModal = (type?: TrashType) => {
-    setEditingType(type || { name: '', category: 'ขยะรีไซเคิล', pricePerUnit: 0, unit: 'กก.', isActive: true });
-    setIsModalOpen(true);
-  };
+const handleEdit = (type: TrashType) => {
+  setSelectedType(type);
+  setIsModalOpen(true);
+};
+
+const handleAdd = () => {
+  setSelectedType(null);
+  setIsModalOpen(true);
+};
+  const filteredTypes = trashTypes.filter(t => 
+    t.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    t.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans">
-      <div className="max-w-6xl mx-auto">
-        {/* Header ส่วนหัว */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">📦 จัดการประเภทขยะ</h1>
-            <p className="text-slate-500 font-bold uppercase text-[10px] tracking-widest mt-1">ตั้งค่าราคากลางสำหรับเทศบาลตำบลราไวย์</p>
+    <div className="min-h-screen bg-[#F8FAFC] pb-20 font-sans">
+      
+      {/* 1. Header & Quick Action */}
+      <div className="bg-white border-b border-slate-100 sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-6 h-24 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <button onClick={() => router.push('/admin/dashboard')} className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400">
+              <ArrowLeft />
+            </button>
+            <div>
+              <h1 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                <BadgeDollarSign className="text-emerald-500 w-6 h-6" /> จัดการราคารับซื้อขยะ
+              </h1>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ปรับเปลี่ยนราคากลางตามประกาศล่าสุด</p>
+            </div>
           </div>
-          <button 
-            onClick={() => handleOpenModal()}
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-2xl font-black shadow-lg shadow-emerald-100 transition-all active:scale-95"
-          >
-            <Plus className="w-5 h-5" /> เพิ่มประเภทขยะ
-          </button>
+
+  <button onClick={handleAdd} className="...">
+  <Plus className="w-5 h-5" /> เพิ่มประเภทขยะใหม่
+</button>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+        
+        {/* 2. Search & Categories Filter */}
+        <div className="relative max-w-md">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
+          <input 
+            type="text" 
+            placeholder="ค้นหาชื่อขยะ หรือ หมวดหมู่..."
+            className="w-full pl-14 pr-6 py-4 bg-white border border-slate-100 rounded-[2rem] shadow-sm outline-none focus:ring-2 focus:ring-emerald-500 font-bold transition-all"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
 
-        {/* ตาราง/การ์ดแสดงรายการ */}
-        {loading ? (
-          <div className="text-center py-20 text-slate-400 font-bold">กำลังโหลดราคากลาง...</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {types.map((type) => (
-              <div key={type.id} className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
+        {/* 3. Trash Types Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {loading ? (
+            <div className="col-span-full py-20 text-center font-black text-slate-300 animate-pulse">กำลังดึงข้อมูลราคาขยะ...</div>
+          ) : filteredTypes.length === 0 ? (
+            <div className="col-span-full py-20 text-center font-bold text-slate-400 italic">ไม่พบข้อมูลประเภทขยะ</div>
+          ) : (
+            filteredTypes.map((type) => (
+              <div key={type.id} className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100 group hover:shadow-2xl hover:-translate-y-1 transition-all">
                 <div className="flex justify-between items-start mb-6">
-                  <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                    <Recycle className="w-8 h-8" />
+                  <div className={`p-4 rounded-2xl ${type.isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
+                    <Tag className="w-6 h-6" />
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${type.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
-                    {type.isActive ? '🟢 เปิดรับ' : '🔴 ปิดรับ'}
-                  </span>
+                  <div className="flex gap-2">
+                    <button className="p-2 hover:bg-slate-50 rounded-lg text-slate-300 hover:text-blue-500 transition-colors">
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 hover:bg-slate-50 rounded-lg text-slate-300 hover:text-rose-500 transition-colors">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-                
-                <h3 className="text-xl font-black text-slate-800 mb-1">{type.name}</h3>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">{type.category}</p>
-                
-                <div className="flex justify-between items-end pt-4 border-t border-slate-50">
+
+                <div className="space-y-1 mb-6">
+                  <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{type.category}</p>
+                  <h3 className="text-xl font-black text-slate-800">{type.name}</h3>
+                </div>
+
+                <div className="flex items-end justify-between bg-slate-50 p-6 rounded-3xl">
                   <div>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">ราคาต่อหน่วย</p>
-                    <p className="text-2xl font-black text-emerald-600">
-                      {type.pricePerUnit.toLocaleString()} <span className="text-sm text-slate-400">บาท/{type.unit}</span>
-                    </p>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mb-1">ราคารับซื้อปัจจุบัน</p>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl font-black text-emerald-600">฿{type.pricePerUnit}</span>
+                      <span className="text-xs font-bold text-slate-400">/ {type.unit}</span>
+                    </div>
                   </div>
-                  <button 
-                    onClick={() => handleOpenModal(type)}
-                    className="p-3 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors"
-                  >
-                    <Edit2 className="w-5 h-5" />
-                  </button>
+                  <button onClick={() => handleEdit(type)} className="...">
+  <Edit2 className="w-4 h-4" />
+</button>
+                  {/* Status Toggle Badge */}
+                  <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${type.isActive ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                    {type.isActive ? <Power className="w-3 h-3" /> : <PowerOff className="w-3 h-3" />}
+                    {type.isActive ? 'Active' : 'Disabled'}
+                  </div>
                 </div>
               </div>
-            ))}
+            ))
+          )}
+        </div>
+
+        {/* 4. Pro Tip Note */}
+        <div className="bg-blue-50 p-6 rounded-[2rem] border border-blue-100 flex gap-4 items-center">
+          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-blue-500 shrink-0 shadow-sm">
+            <Info className="w-6 h-6" />
           </div>
-        )}
+          <p className="text-xs font-bold text-blue-700 leading-relaxed">
+            <span className="block font-black uppercase tracking-widest mb-1 text-[10px]">คำแนะนำจากระบบ:</span>
+            การเปลี่ยนแปลงราคาจะมีผลทันทีต่อรายการฝากใหม่หลังจากนี้ แต่จะไม่ส่งผลกระทบต่อรายการที่บันทึกไปแล้วในอดีตเพื่อรักษาความถูกต้องของบัญชีสมาชิก
+          </p>
+        </div>
+
       </div>
-<TrashTypeModal 
-  isOpen={isModalOpen}
-  onClose={() => setIsModalOpen(false)}
-  onSuccess={loadTypes}
-  editData={editingType}
+      <TrashTypeModal 
+  isOpen={isModalOpen} 
+  onClose={() => setIsModalOpen(false)} 
+  onSuccess={loadTrashTypes}
+  editData={selectedType}
 />
-      {/* เดี๋ยวสเต็ปหน้าเรามาทำ Modal Form สำหรับเพิ่ม/แก้ไขกันครับ */}
     </div>
   );
 }
