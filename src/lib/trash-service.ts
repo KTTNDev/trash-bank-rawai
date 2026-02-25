@@ -55,14 +55,15 @@ export const updateTrashType = async (id: string, data: Partial<TrashType>) => {
   const docRef = doc(db, 'trash_types', id);
   return await updateDoc(docRef, data);
 };
-// 1. เพิ่มฟังก์ชันดึงรายชื่อสมาชิกทั้งหมด (สำหรับหน้า admin/members)
+// 🟢 1. แก้ไข getMembers ให้บิ้วผ่าน (บรรทัด 62)
 export const getMembers = async () => {
   const q = query(collection(db, 'members'), orderBy('name'));
   const snap = await getDocs(q);
- return snap.docs.map(d => ({ id: d.id, ...d.data() }) as unknown as TrashMember);
+  // ใช้ 'as unknown as TrashMember' เพื่อบอก TS ว่าเรามั่นใจในข้อมูลนี้
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as unknown as TrashMember));
 };
 
-// 2. เพิ่มฟังก์ชันลบประเภทขยะ (แก้ปัญหา Build Error ที่เจออยู่)
+// 🟢 2. มั่นใจว่า deleteTrashType ถูก Export ออกมาแล้ว
 export const deleteTrashType = async (id: string) => {
   const docRef = doc(db, 'trash_types', id);
   return await deleteDoc(docRef);
