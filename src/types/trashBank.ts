@@ -22,6 +22,7 @@ export interface TransactionItem {
   price: number;
   amount: number;
   subTotal: number;
+  unit: string;    
 }
 
 export interface TrashTransaction {

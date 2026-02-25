@@ -30,21 +30,24 @@ export default function TrashTypeModal({ isOpen, onClose, onSuccess, editData }:
     }
   }, [editData, isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      if (editData?.id) {
-        await updateTrashType(editData.id, formData);
-      } else {
-        await addTrashType(formData);
-      }
-      onSuccess(); // โหลดข้อมูลใหม่
-      onClose();   // ปิดหน้าต่าง
-    } catch (error: any) {
-  console.error("Firebase Error:", error); // 👈 เพิ่มบรรทัดนี้เพื่อดู Error ใน F12
-  alert('เกิดข้อผิดพลาด: ' + error.message); // 👈 ให้มันบอกเลยว่าผิดตรงไหน
-}
-  };
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    if (editData?.id) {
+      await updateTrashType(editData.id, formData);
+    } else {
+      // ลองทำความสะอาดข้อมูลก่อนส่ง (ลบ id ออกถ้ามันเป็นค่าว่าง)
+      const { id, ...cleanData } = formData;
+      await addTrashType(cleanData as any); 
+    }
+    onSuccess();
+    onClose();
+  } catch (error: any) {
+    // 🔴 แก้ตรงนี้เพื่อให้เห็นสาเหตุที่แท้จริง
+    console.error("Firebase Save Error:", error);
+    alert('เกิดข้อผิดพลาด: ' + (error.message || 'ตรวจสอบ Console (F12)'));
+  }
+};
 
   if (!isOpen) return null;
 

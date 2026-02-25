@@ -38,8 +38,13 @@ export const getTrashTypes = async () => {
 
 // เพิ่มประเภทขยะใหม่
 export const addTrashType = async (data: TrashType) => {
-  // สร้าง copy ข้อมูลและลบ id ออก (ถ้ามี) เพราะ Firestore จะสร้าง ID ให้เองอัตโนมัติ
-  const { id, ...cleanData } = data; 
+  // ตรวจสอบว่าราคาเป็นตัวเลขจริงๆ ไม่ใช่ NaN
+  if (isNaN(data.pricePerUnit)) {
+    throw new Error("กรุณาระบุราคาเป็นตัวเลขที่ถูกต้อง");
+  }
+
+  // ล้างค่า id ออกก่อนบันทึก เพราะ addDoc จะสร้าง ID ให้เองอัตโนมัติ
+  const { id, ...cleanData } = data;
   return await addDoc(collection(db, 'trash_types'), cleanData);
 };
 // อัปเดตข้อมูลขยะ

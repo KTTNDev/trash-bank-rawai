@@ -35,13 +35,14 @@ export default function StaffRecordPage() {
     const existing = cart.find(item => item.typeId === type.id);
     if (existing) return; // ถ้ามีในบิลแล้วไม่ให้เพิ่มซ้ำ (ให้ไปแก้ตัวเลขเอา)
     
-    setCart([...cart, {
-      typeId: type.id || '',
-      name: type.name,
-      price: type.pricePerUnit,
-      amount: 0,
-      subTotal: 0
-    }]);
+setCart([...cart, {
+    typeId: type.id || '',
+    name: type.name,
+    price: type.pricePerUnit,
+    unit: type.unit, // 👈 เพิ่มบรรทัดนี้เพื่อให้มันจำว่าเป็น กก. หรือ ชิ้น
+    amount: 0,
+    subTotal: 0
+  }]);
   };
 
   // 4. อัปเดตปริมาณขยะและคำนวณเงิน
