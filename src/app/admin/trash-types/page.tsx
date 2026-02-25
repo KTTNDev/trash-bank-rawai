@@ -8,7 +8,7 @@ import {
 import TrashTypeModal from '../../../components/trash-bank/TrashTypeModal';
 
 import { useRouter } from 'next/navigation';
-import { getTrashTypes, deleteTrashType } from '@/lib/trash-service';
+import { getTrashTypes, deleteTrashType } from '../../..//lib/trash-service';
 import { TrashType } from '@/types/trashBank';
 
 export default function TrashPriceManagementPage() {

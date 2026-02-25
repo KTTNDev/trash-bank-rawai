@@ -59,7 +59,7 @@ export const updateTrashType = async (id: string, data: Partial<TrashType>) => {
 export const getMembers = async () => {
   const q = query(collection(db, 'members'), orderBy('name'));
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as TrashMember));
+ return snap.docs.map(d => ({ id: d.id, ...d.data() }) as unknown as TrashMember);
 };
 
 // 2. เพิ่มฟังก์ชันลบประเภทขยะ (แก้ปัญหา Build Error ที่เจออยู่)
