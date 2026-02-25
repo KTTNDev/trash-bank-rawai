@@ -75,36 +75,54 @@ export default function MemberDashboard() {
         </div>
 
         {/* 4. History List */}
-        <div className="bg-white rounded-[3rem] p-8 shadow-sm border border-slate-100">
-          <h3 className="text-xl font-black text-slate-800 mb-8 flex items-center gap-3">
-            <History className="text-emerald-500 w-6 h-6" /> ประวัติรายการล่าสุด
-          </h3>
-          <div className="space-y-8">
-            {transactions.length === 0 ? (
-              <p className="text-center py-10 text-slate-400 font-bold italic">ยังไม่มีประวัติการฝากขยะ</p>
-            ) : (
-              transactions.map((t, idx) => (
-                <div key={idx} className="flex gap-6 relative">
-                  {idx !== transactions.length - 1 && <div className="absolute left-[23px] top-10 bottom-[-32px] w-0.5 bg-slate-100"></div>}
-                  <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 shadow-inner z-10">
-                    <span className="text-emerald-600 font-black">{new Date(t.timestamp?.seconds * 1000).getDate()}</span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start mb-1">
-                      <p className="font-black text-slate-800 text-lg">+{t.totalAmount.toLocaleString()} ฿</p>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        {new Date(t.timestamp?.seconds * 1000).toLocaleDateString('th-TH')}
-                      </p>
-                    </div>
-                    <p className="text-xs text-slate-500 font-medium">
-                      {t.items.map((i: any) => `${i.name} (${i.amount} ${i.unit})`).join(', ')}
-                    </p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+       {transactions.map((t, idx) => (
+  <div key={idx} className="flex gap-6 relative">
+    {/* เส้น Timeline */}
+    {idx !== transactions.length - 1 && <div className="absolute left-[23px] top-10 bottom-[-32px] w-0.5 bg-slate-100"></div>}
+    
+    {/* วันที่ */}
+    <div className="w-12 h-12 bg-white border border-slate-100 rounded-2xl flex items-center justify-center shrink-0 shadow-sm z-10">
+      <span className="text-emerald-600 font-black">{new Date(t.timestamp?.seconds * 1000).getDate()}</span>
+    </div>
+
+    {/* รายละเอียดรายการ */}
+    <div className="flex-1 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm mb-4">
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">เลขที่รายการ: {t.id?.slice(-6).toUpperCase()}</p>
+          <p className="text-[10px] font-bold text-slate-400 uppercase">
+            {new Date(t.timestamp?.seconds * 1000).toLocaleTimeString('th-TH')} น.
+          </p>
         </div>
+        <div className="text-right">
+          <p className="text-xl font-black text-emerald-600">+{t.totalAmount.toLocaleString()} ฿</p>
+          <p className="text-[9px] font-bold text-slate-400">ยอดสุทธิ</p>
+        </div>
+      </div>
+
+      {/* 🟢 ส่วนที่ฟลุ๊คต้องการ: รายการขยะแยกชิ้น */}
+      <div className="space-y-3 pt-3 border-t border-dashed border-slate-100">
+        {t.items.map((item: any, iIdx: number) => (
+          <div key={iIdx} className="flex justify-between items-center text-sm">
+            <div className="flex flex-col">
+              <span className="font-black text-slate-700">{item.name}</span>
+              <span className="text-[10px] text-slate-400 font-bold">
+                {item.amount} {item.unit} × {item.price} ฿
+              </span>
+            </div>
+            <span className="font-bold text-slate-600">{item.subTotal.toLocaleString()} ฿</span>
+          </div>
+        ))}
+      </div>
+
+      {/* ยอดเงิน ก่อน-หลัง (Timeline ที่เราเพิ่มไว้ใน Service) */}
+      <div className="mt-4 pt-3 border-t border-slate-50 flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+        <span>เงินเดิม: {t.balanceBefore?.toLocaleString() || 0} ฿</span>
+        <span className="text-emerald-500">เงินรวม: {t.balanceAfter?.toLocaleString() || t.totalAmount} ฿</span>
+      </div>
+    </div>
+  </div>
+))}
       </div>
     </div>
   );

@@ -31,19 +31,19 @@ export default function StaffRecordPage() {
   };
 
   // 3. เพิ่มขยะลงในบิล (Cart)
-  const addToCart = (type: TrashType) => {
-    const existing = cart.find(item => item.typeId === type.id);
-    if (existing) return; // ถ้ามีในบิลแล้วไม่ให้เพิ่มซ้ำ (ให้ไปแก้ตัวเลขเอา)
-    
-setCart([...cart, {
+    const addToCart = (type: TrashType) => {
+  const existing = cart.find(item => item.typeId === type.id);
+  if (existing) return;
+  
+  setCart([...cart, {
     typeId: type.id || '',
     name: type.name,
     price: type.pricePerUnit,
-    unit: type.unit, // 👈 เพิ่มบรรทัดนี้เพื่อให้มันจำว่าเป็น กก. หรือ ชิ้น
+    unit: type.unit, // 👈 มั่นใจว่ามีบรรทัดนี้
     amount: 0,
     subTotal: 0
   }]);
-  };
+};
 
   // 4. อัปเดตปริมาณขยะและคำนวณเงิน
   const updateAmount = (index: number, amount: number) => {

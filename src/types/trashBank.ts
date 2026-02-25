@@ -15,14 +15,13 @@ export interface TrashMember {
   updatedAt: any;
   createdAt: any;
 }
-
 export interface TransactionItem {
   typeId: string;
   name: string;
   price: number;
   amount: number;
+  unit: string;    // 👈 เพิ่มบรรทัดนี้ครับ
   subTotal: number;
-  unit: string;    
 }
 
 export interface TrashTransaction {
@@ -30,8 +29,8 @@ export interface TrashTransaction {
   memberId: string;
   items: TransactionItem[];
   totalAmount: number;
-  balanceBefore: number; // 👈 เพิ่ม: ยอดเงินในบัญชีก่อนจะฝากครั้งนี้
-  balanceAfter: number;  // 👈 เพิ่ม: ยอดเงินในบัญชีหลังจากฝากครั้งนี้เสร็จแล้ว
+  balanceBefore: number; // 👈 เพิ่มไว้เก็บประวัติยอดเงินก่อนฝาก
+  balanceAfter: number;  // 👈 เพิ่มไว้เก็บประวัติยอดเงินหลังฝาก
   staffId: string;
   timestamp: any;
 }
