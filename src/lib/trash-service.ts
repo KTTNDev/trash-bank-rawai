@@ -55,7 +55,18 @@ export const updateTrashType = async (id: string, data: Partial<TrashType>) => {
   const docRef = doc(db, 'trash_types', id);
   return await updateDoc(docRef, data);
 };
+// 1. เพิ่มฟังก์ชันดึงรายชื่อสมาชิกทั้งหมด (สำหรับหน้า admin/members)
+export const getMembers = async () => {
+  const q = query(collection(db, 'members'), orderBy('name'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as TrashMember));
+};
 
+// 2. เพิ่มฟังก์ชันลบประเภทขยะ (แก้ปัญหา Build Error ที่เจออยู่)
+export const deleteTrashType = async (id: string) => {
+  const docRef = doc(db, 'trash_types', id);
+  return await deleteDoc(docRef);
+};
 // --- 3. ระบบบันทึกการฝากขยะ (Transaction & Timeline) ---
 
 // บันทึกการฝากขยะ (หัวใจของระบบ: อัปเดตเงิน + บันทึก Timeline)
