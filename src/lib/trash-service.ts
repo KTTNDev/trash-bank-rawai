@@ -38,9 +38,10 @@ export const getTrashTypes = async () => {
 
 // เพิ่มประเภทขยะใหม่
 export const addTrashType = async (data: TrashType) => {
-  return await addDoc(collection(db, 'trash_types'), data);
+  // สร้าง copy ข้อมูลและลบ id ออก (ถ้ามี) เพราะ Firestore จะสร้าง ID ให้เองอัตโนมัติ
+  const { id, ...cleanData } = data; 
+  return await addDoc(collection(db, 'trash_types'), cleanData);
 };
-
 // อัปเดตข้อมูลขยะ
 export const updateTrashType = async (id: string, data: Partial<TrashType>) => {
   const docRef = doc(db, 'trash_types', id);
@@ -50,34 +51,45 @@ export const updateTrashType = async (id: string, data: Partial<TrashType>) => {
 // --- 3. ระบบบันทึกการฝากขยะ (Transaction & Timeline) ---
 
 // บันทึกการฝากขยะ (หัวใจของระบบ: อัปเดตเงิน + บันทึก Timeline)
+// src/lib/trash-service.ts
+
 export const saveDeposit = async (data: Omit<TrashTransaction, 'timestamp'>) => {
+  console.log("1. เริ่มบันทึกฝากขยะ...", data); // 👈 เช็คว่าข้อมูลมาถึงไหม
   const memberRef = doc(db, 'members', data.memberId);
   
-  return await runTransaction(db, async (transaction) => {
-    const memberDoc = await transaction.get(memberRef);
-    if (!memberDoc.exists()) throw "ไม่พบสมาชิกในระบบ!";
+  try {
+    return await runTransaction(db, async (transaction) => {
+      console.log("2. เข้าสู่ Transaction...");
+      const memberDoc = await transaction.get(memberRef);
+      
+      if (!memberDoc.exists()) {
+        console.error("❌ ไม่พบสมาชิก ID:", data.memberId);
+        throw "ไม่พบสมาชิกในระบบ!";
+      }
 
-    // คำนวณยอดเงิน ก่อน และ หลัง ฝากเพื่อทำ Timeline
-    const oldBalance = memberDoc.data().totalBalance || 0;
-    const newBalance = oldBalance + data.totalAmount;
+      const oldBalance = memberDoc.data().totalBalance || 0;
+      const newBalance = oldBalance + data.totalAmount;
+      console.log("3. คำนวณเงิน:", oldBalance, "->", newBalance);
 
-    // อัปเดตยอดเงินที่ตัวสมาชิก
-    transaction.update(memberRef, { 
-      totalBalance: newBalance,
-      updatedAt: serverTimestamp() 
+      transaction.update(memberRef, { 
+        totalBalance: newBalance,
+        updatedAt: serverTimestamp() 
+      });
+
+      const transRef = doc(collection(db, 'transactions'));
+      transaction.set(transRef, { 
+        ...data, 
+        balanceBefore: oldBalance,
+        balanceAfter: newBalance,
+        timestamp: serverTimestamp() 
+      });
+      console.log("4. บันทึกข้อมูลเรียบร้อย!");
     });
-
-    // บันทึกบิลละเอียดลง Timeline (Transactions Collection)
-    const transRef = doc(collection(db, 'transactions'));
-    transaction.set(transRef, { 
-      ...data, 
-      balanceBefore: oldBalance,
-      balanceAfter: newBalance,
-      timestamp: serverTimestamp() 
-    });
-  });
+  } catch (error) {
+    console.error("❌ Transaction Failed:", error); // 👈 จะเห็น Error จริงๆ ที่นี่
+    throw error;
+  }
 };
-
 // --- 4. การดึงข้อมูลสรุป (Stats & History) ---
 
 // ดึงประวัติรายบุคคล
