@@ -115,11 +115,12 @@ export default function LandingPage() {
       </button>
 
       {/* Login Button: ปุ่มหลักที่โดดเด่น [cite: 2026-02-26] */}
-     <button 
+    <button 
   onClick={() => router.push('/admin/login')} 
-  className="flex items-center gap-2 text-slate-400 hover:text-emerald-600 transition-colors text-[10px] font-black uppercase tracking-widest px-3 py-2"
+  className="flex items-center gap-1 text-slate-400 hover:text-emerald-600 px-2"
 >
-  <Lock className="w-3.5 h-3.5" /> Staff
+  <Lock className="w-4 h-4" />
+  <span className="hidden xs:inline-block text-[9px] font-black uppercase">Staff</span>
 </button>
     </div>
 
