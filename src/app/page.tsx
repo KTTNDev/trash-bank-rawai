@@ -136,7 +136,7 @@ export default function LandingPage() {
               ภารกิจลดงบประมาณ <br/>
               <span className="text-emerald-400">กำจัดขยะมวลรวม 20,262 ตัน</span>
             </h2>
-            <p className="text-slate-400 text-lg leading-relaxed font-medium">ทุกๆ 1 ตันที่คุณช่วยแยก ช่วยลดภาระงบประมาณเทศบาลได้ <span className="text-white font-black underline">725 บาท</span> [cite: 2026-02-26]</p>
+            <p className="text-slate-400 text-lg leading-relaxed font-medium">ทุกๆ 1 ตันที่คุณช่วยแยก ช่วยลดภาระงบประมาณเทศบาลได้ <span className="text-white font-black underline">725 บาท</span></p>
             <div className="grid grid-cols-2 gap-4">
               {loading ? <><SkeletonCard height="h-28"/><SkeletonCard height="h-28"/></> : <>
                 <div className="bg-white/10 p-6 rounded-[2.5rem] border border-white/5 shadow-inner">
