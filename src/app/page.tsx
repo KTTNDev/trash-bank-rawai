@@ -131,7 +131,7 @@ export default function LandingPage() {
               <p className="text-slate-500 text-sm md:text-lg font-medium max-w-xl mx-auto lg:mx-0">คืนงบประมาณกำจัดขยะ 20,262.73 ตัน/ปี งบประมาณปีละ 12 ล้านบาท กลับสู่การพัฒนาตำบลอย่างยั่งยืน</p>
             </div>
 
-            {/* Quick Access Menu: ปรับความสูง Compact */}
+            {/* Quick Access Menu: ปรับความสูงCompact */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-w-2xl mx-auto lg:mx-0">
               <div className="col-span-2 md:col-span-1">
                 <HeroActionCard icon={<Wallet className="w-7 h-7" />} label="START" title="เริ่มสะสมเงิน" color="bg-emerald-600" textColor="text-white" isMain={true} onClick={() => router.push('/member/login')} />
