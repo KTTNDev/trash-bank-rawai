@@ -4,10 +4,9 @@ import {
   collection, doc, setDoc, getDoc, getDocs, 
   updateDoc, serverTimestamp, query, orderBy, 
   where, runTransaction, addDoc, limit , deleteDoc,
-  increment // 🟢 เพิ่ม increment สำหรับระบบนับคนเข้าชม
+  increment, writeBatch// 🟢 เพิ่ม increment สำหรับระบบนับคนเข้าชม
 } from 'firebase/firestore';
 import { TrashType, TrashMember, TrashTransaction } from '@/types/trashBank';
-
 // --- 1. จัดการสมาชิก (Member Management) ---
 
 export const findMember = async (nationalId: string) => {
@@ -15,7 +14,22 @@ export const findMember = async (nationalId: string) => {
   const docSnap = await getDoc(docRef);
   return docSnap.exists() ? { ...docSnap.data() } as TrashMember : null;
 };
+export const bulkRegisterMembers = async (members: any[]) => {
+  const batch = writeBatch(db);
+  
+  members.forEach((m) => {
+    // ใช้เลขบัตรประชาชนเป็น ID ของ Document เลย
+    const memberRef = doc(db, 'members', m.nationalId);
+    batch.set(memberRef, {
+      ...m,
+      totalBalance: 0,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+  });
 
+  return await batch.commit();
+};
 export const registerMember = async (member: Omit<TrashMember, 'totalBalance' | 'createdAt' | 'updatedAt'>) => {
   const memberRef = doc(db, 'members', member.nationalId);
   return await setDoc(memberRef, {
