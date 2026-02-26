@@ -180,7 +180,7 @@ export default function LandingPage() {
         </h2>
         <p className="text-slate-400 text-lg md:text-xl font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
           ตำบลราไวย์มีขยะมวลรวมสูงถึง <span className="text-white font-black underline decoration-emerald-500/50">20,262 ตัน/ปี</span> 
-          ใช้งบประมาณจัดการกว่า <span className="text-white font-black underline decoration-emerald-500/50">12 ล้านบาท/ปี</span>  ล้านบาท 
+          ใช้งบประมาณจัดการกว่า <span className="text-white font-black underline decoration-emerald-500/50">12 ล้านบาท/ปี</span>  
         </p>
       </div>
 
