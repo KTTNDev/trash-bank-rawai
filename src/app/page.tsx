@@ -295,7 +295,7 @@ export default function LandingPage() {
             <div className="w-px h-3 bg-slate-700" />
             <span className="flex items-center gap-2"><Globe className="w-3 h-3" /> ทั้งหมด: {visitorStats.total.toLocaleString()}</span>
          </div>
-         <p className="text-[8px] font-black uppercase tracking-[0.4em] text-slate-600">© 2026 Rawai Subdistrict Municipality. By Fluke kttndev</p>
+         <p className="text-[8px] font-black uppercase tracking-[0.4em] text-slate-600">ทีมฝ่ายนโยบายและแผน เทศบาลตำบลราไวย์</p>
       </footer>
     </div>
   );
