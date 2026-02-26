@@ -23,9 +23,12 @@ export default function LandingPage() {
   const brandGradient = "linear-gradient(90deg, hsla(160, 50%, 51%, 1) 0%, hsla(247, 60%, 21%, 1) 100%)";
 
   const quickLinks = [
-    { name: "CCTV ราไวย์", url: "https://cctv-db-rawai-request.vercel.app/", color: "bg-teal-50" },
-    { name: "E-Service Center", url: "https://e-service-rawai-center.vercel.app/", color: "bg-blue-50" },
-    { name: "Rawai One Map", url: "https://rawai-one-map.web.app/", color: "bg-emerald-50" }
+    { name: "หน้าหลักรวมบริการ", url: "https://e-service-rawai-center.vercel.app/", imageUrl: "https://www.rawai.go.th/images/header-72-1/logo_0004.png",  color:  "bg-blue-50" },
+    { name: "กิจกรรมราไวย์", url: "https://www.rawai.go.th/event.php", imageUrl: "https://www.rawai.go.th/images/header-72-1/logo_0004.png", color: "bg-blue-50"  },
+    { name: "Rawai One Map", url: "https://rawai-one-map.web.app/",imageUrl: "https://www.rawai.go.th/images/header-72-1/logo_0004.png", color: "bg-blue-50" },
+    { name: "Traffy Fondue", url: "https://landing.traffy.in.th?key=elqOlHUe",  imageUrl: "https://www.nstda.or.th/nac/2023/wp-content/uploads/2023/03/ex-faeature-image_ex07.webp", color: "bg-blue-50"  },
+    { name: "ระบบ E-Office", url: "https://rawai.s.eoffice.go.th/portal/home", imageUrl: "https://www.eoffice.go.th/img/Logo-e-Office.png", color: "bg-indigo-50" },
+    { name: "ศูนย์บริการ OSS", url: "https://www.dla.go.th/land/oss.do", imageUrl: "https://www.dla.go.th/images/logo.png", color: "bg-blue-50"  }
   ];
 
   useEffect(() => {
@@ -83,7 +86,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex justify-between items-center">
           <div className="flex items-center gap-2 md:gap-3">
             <div className="w-9 h-9 md:w-10 md:h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200"><Recycle className="w-5 h-5 md:w-6 md:h-6" /></div>
-            <span className="font-black text-sm md:text-xl tracking-tighter uppercase">TRASH BANK <span className="text-emerald-600">RAWAI</span></span>
+            <span className="font-black text-sm md:text-xl tracking-tighter uppercase">ธนาคารขยะ<span className="text-emerald-600">RAWAI สบายซิตี้</span></span>
           </div>
           <div className="flex items-center gap-3">
             <button onClick={() => router.push('/admin/login')} className="text-slate-400 hover:text-emerald-600 text-[10px] md:text-xs font-black uppercase tracking-widest transition-colors flex items-center gap-1"><Lock className="w-3 h-3" /> Staff</button>
