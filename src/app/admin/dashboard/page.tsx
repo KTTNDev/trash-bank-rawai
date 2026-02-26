@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Users, BadgeDollarSign, Receipt, BarChart3, 
-  Settings, LogOut, Recycle, ChevronRight, LayoutDashboard 
+  Settings, LogOut, Recycle, ChevronRight, LayoutDashboard,
+  Megaphone // 🟢 เพิ่มไอคอนประกาศ
 } from 'lucide-react';
 import { getGlobalStats } from '@/lib/trash-service';
 
@@ -28,7 +29,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-10 md:pb-20 font-sans text-slate-900 overflow-x-hidden">
       
-      {/* 1. Header: ปรับขนาดบนมือถือ */}
+      {/* 1. Header: Greeting & Logout */}
       <div className="bg-slate-900 pt-8 pb-24 md:pt-12 md:pb-32 px-4 md:px-6 rounded-b-[2.5rem] md:rounded-b-[4rem] relative overflow-hidden shadow-2xl">
         <div className="absolute top-0 right-0 p-6 md:p-10 opacity-5 text-white">
           <Settings className="w-40 h-40 md:w-64 md:h-64 rotate-12" />
@@ -39,7 +40,7 @@ export default function AdminDashboardPage() {
                 <LayoutDashboard className="w-6 h-6 md:w-8 md:h-8" />
              </div>
              <div>
-                <h1 className="text-lg md:text-2xl font-black text-white leading-none">แอดมินฟลุ๊ค</h1>
+                <h1 className="text-lg md:text-2xl font-black text-white leading-none">สวัสดี แอดมินฟลุ๊ค</h1>
                 <p className="text-slate-400 text-[8px] md:text-[10px] font-bold uppercase tracking-[0.2em] mt-1">Rawai Command Center</p>
              </div>
           </div>
@@ -54,18 +55,17 @@ export default function AdminDashboardPage() {
 
       <div className="max-w-6xl mx-auto px-4 md:px-6 -mt-12 md:-mt-16 space-y-6 md:space-y-8 relative z-20">
         
-        {/* 2. Summary Bar: 2 คอลัมน์บนมือถือ โดยใบแรกเด่นสุด */}
+        {/* 2. Summary Bar */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
           <div className="col-span-2 md:col-span-1">
             <SummaryCard label="น้ำหนักรวม" value={(stats?.totalWeight / 1000).toFixed(2) || '0'} unit="ตัน" color="bg-emerald-500" isMain={true} />
           </div>
-          {/* 🟢 แก้บั๊ก: ใช้ stats?.totalMembers แทน totalTransactions */}
           <SummaryCard label="สมาชิก" value={stats?.totalMembers || '0'} unit="ราย" color="bg-blue-500" />
           <SummaryCard label="ยอดหมุนเวียน" value={stats?.totalMoney?.toLocaleString() || '0'} unit="฿" color="bg-amber-500" />
         </div>
 
-        {/* 3. Main Navigation Grid: 2 คอลัมน์บนมือถือแบบไม่น่าเบื่อ */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+        {/* 3. Main Navigation Grid: 🟢 เพิ่มเมนูจัดการข่าวสาร 🟢 */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
           <MenuCard 
             icon={<Users className="w-6 h-6 md:w-8 md:h-8" />} 
             title="จัดการสมาชิก" 
@@ -81,16 +81,23 @@ export default function AdminDashboardPage() {
             onClick={() => router.push('/admin/trash-types')} 
           />
           <MenuCard 
+            icon={<Megaphone className="w-6 h-6 md:w-8 md:h-8" />} 
+            title="จัดการข่าวสาร" 
+            desc="อัปเดตตารางลงพื้นที่/ประชาสัมพันธ์"
+            color="text-amber-600"
+            onClick={() => router.push('/admin/announcements')} 
+          />
+          <MenuCard 
             icon={<Recycle className="w-6 h-6 md:w-8 md:h-8" />} 
             title="รับฝากขยะ" 
-            desc="หน้าบันทึกรายการฝากขยะ"
-            color="text-amber-600"
+            desc="บันทึกรายการฝาก (ฝั่งเจ้าหน้าที่)"
+            color="text-emerald-700"
             onClick={() => router.push('/staff/record')} 
           />
           <MenuCard 
             icon={<BarChart3 className="w-6 h-6 md:w-8 md:h-8" />} 
             title="รายงานสถิติ" 
-            desc="ดูข้อมูลวิเคราะห์รายเดือน"
+            desc="วิเคราะห์ข้อมูลโครงการเชิงลึก"
             color="text-purple-600"
             onClick={() => router.push('/admin/reports')} 
           />
@@ -100,6 +107,7 @@ export default function AdminDashboardPage() {
   );
 }
 
+// Sub-components คงเดิมครับ
 function SummaryCard({ label, value, unit, color, isMain }: any) {
   return (
     <div className={`bg-white rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-slate-100 flex items-center justify-between overflow-hidden relative ${isMain ? 'p-6 md:p-8' : 'p-4 md:p-8'}`}>

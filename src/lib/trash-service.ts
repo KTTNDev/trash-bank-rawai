@@ -3,20 +3,19 @@ import { db } from './firebase';
 import { 
   collection, doc, setDoc, getDoc, getDocs, 
   updateDoc, serverTimestamp, query, orderBy, 
-  where, runTransaction, addDoc, limit , deleteDoc
+  where, runTransaction, addDoc, limit , deleteDoc,
+  increment // 🟢 เพิ่ม increment สำหรับระบบนับคนเข้าชม
 } from 'firebase/firestore';
 import { TrashType, TrashMember, TrashTransaction } from '@/types/trashBank';
 
 // --- 1. จัดการสมาชิก (Member Management) ---
 
-// ค้นหาสมาชิกด้วยเลขบัตรประชาชน
 export const findMember = async (nationalId: string) => {
   const docRef = doc(db, 'members', nationalId);
   const docSnap = await getDoc(docRef);
   return docSnap.exists() ? { ...docSnap.data() } as TrashMember : null;
 };
 
-// ลงทะเบียนสมาชิกใหม่
 export const registerMember = async (member: Omit<TrashMember, 'totalBalance' | 'createdAt' | 'updatedAt'>) => {
   const memberRef = doc(db, 'members', member.nationalId);
   return await setDoc(memberRef, {
@@ -26,70 +25,53 @@ export const registerMember = async (member: Omit<TrashMember, 'totalBalance' | 
     updatedAt: serverTimestamp()
   });
 };
+
+export const getMembers = async () => {
+  const q = query(collection(db, 'members'), orderBy('name'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as unknown as TrashMember));
+};
+
 export const deleteMember = async (id: string) => {
   const memberRef = doc(db, 'members', id);
   return await deleteDoc(memberRef);
 };
+
 // --- 2. จัดการประเภทขยะ (Trash Type Management) ---
 
-// ดึงรายการขยะและราคา
 export const getTrashTypes = async () => {
   const q = query(collection(db, 'trash_types'), orderBy('name'));
   const snap = await getDocs(q);
   return snap.docs.map(d => ({ id: d.id, ...d.data() } as TrashType));
 };
 
-// เพิ่มประเภทขยะใหม่
 export const addTrashType = async (data: TrashType) => {
-  // ตรวจสอบว่าราคาเป็นตัวเลขจริงๆ ไม่ใช่ NaN
-  if (isNaN(data.pricePerUnit)) {
-    throw new Error("กรุณาระบุราคาเป็นตัวเลขที่ถูกต้อง");
-  }
-
-  // ล้างค่า id ออกก่อนบันทึก เพราะ addDoc จะสร้าง ID ให้เองอัตโนมัติ
+  if (isNaN(data.pricePerUnit)) throw new Error("กรุณาระบุราคาเป็นตัวเลขที่ถูกต้อง");
   const { id, ...cleanData } = data;
   return await addDoc(collection(db, 'trash_types'), cleanData);
 };
-// อัปเดตข้อมูลขยะ
+
 export const updateTrashType = async (id: string, data: Partial<TrashType>) => {
   const docRef = doc(db, 'trash_types', id);
   return await updateDoc(docRef, data);
 };
-// 🟢 1. แก้ไข getMembers ให้บิ้วผ่าน (บรรทัด 62)
-export const getMembers = async () => {
-  const q = query(collection(db, 'members'), orderBy('name'));
-  const snap = await getDocs(q);
-  // ใช้ 'as unknown as TrashMember' เพื่อบอก TS ว่าเรามั่นใจในข้อมูลนี้
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as unknown as TrashMember));
-};
 
-// 🟢 2. มั่นใจว่า deleteTrashType ถูก Export ออกมาแล้ว
 export const deleteTrashType = async (id: string) => {
   const docRef = doc(db, 'trash_types', id);
   return await deleteDoc(docRef);
 };
+
 // --- 3. ระบบบันทึกการฝากขยะ (Transaction & Timeline) ---
 
-// บันทึกการฝากขยะ (หัวใจของระบบ: อัปเดตเงิน + บันทึก Timeline)
-// src/lib/trash-service.ts
-
 export const saveDeposit = async (data: Omit<TrashTransaction, 'timestamp'>) => {
-  console.log("1. เริ่มบันทึกฝากขยะ...", data); // 👈 เช็คว่าข้อมูลมาถึงไหม
   const memberRef = doc(db, 'members', data.memberId);
-  
   try {
     return await runTransaction(db, async (transaction) => {
-      console.log("2. เข้าสู่ Transaction...");
       const memberDoc = await transaction.get(memberRef);
-      
-      if (!memberDoc.exists()) {
-        console.error("❌ ไม่พบสมาชิก ID:", data.memberId);
-        throw "ไม่พบสมาชิกในระบบ!";
-      }
+      if (!memberDoc.exists()) throw "ไม่พบสมาชิกในระบบ!";
 
       const oldBalance = memberDoc.data().totalBalance || 0;
       const newBalance = oldBalance + data.totalAmount;
-      console.log("3. คำนวณเงิน:", oldBalance, "->", newBalance);
 
       transaction.update(memberRef, { 
         totalBalance: newBalance,
@@ -103,58 +85,104 @@ export const saveDeposit = async (data: Omit<TrashTransaction, 'timestamp'>) => 
         balanceAfter: newBalance,
         timestamp: serverTimestamp() 
       });
-      console.log("4. บันทึกข้อมูลเรียบร้อย!");
     });
   } catch (error) {
-    console.error("❌ Transaction Failed:", error); // 👈 จะเห็น Error จริงๆ ที่นี่
+    console.error("❌ Transaction Failed:", error);
     throw error;
   }
 };
-// --- 4. การดึงข้อมูลสรุป (Stats & History) ---
 
-// ดึงประวัติรายบุคคล
 export const getMemberTransactions = async (nationalId: string) => {
-  const q = query(
-    collection(db, 'transactions'), 
-    where('memberId', '==', nationalId), 
-    orderBy('timestamp', 'desc')
-  );
+  const q = query(collection(db, 'transactions'), where('memberId', '==', nationalId), orderBy('timestamp', 'desc'));
   const snap = await getDocs(q);
   return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
-// ดึงประวัติรวมทั้งตำบล (Timeline กลาง)
 export const getAllTransactions = async (limitCount: number = 50) => {
-  const q = query(
-    collection(db, 'transactions'),
-    orderBy('timestamp', 'desc'),
-    limit(limitCount)
-  );
+  const q = query(collection(db, 'transactions'), orderBy('timestamp', 'desc'), limit(limitCount));
   const snap = await getDocs(q);
   return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
-// สรุปสถิติสำหรับ Dashboard ผู้บริหาร
+// --- 4. สรุปสถิติและวิเคราะห์ (Stats & Analytics) ---
+
+// 🟢 แก้ไขสถิติสมาชิกให้ถูกต้อง: นับคนจริงๆ [cite: 2026-02-26]
 export const getGlobalStats = async () => {
-  const snap = await getDocs(collection(db, 'transactions'));
-  const transactions = snap.docs.map(doc => doc.data());
+  const [transSnap, membersSnap] = await Promise.all([
+    getDocs(collection(db, 'transactions')),
+    getDocs(collection(db, 'members'))
+  ]);
 
   let totalMoney = 0;
   let totalWeight = 0;
-  const categoryMap: Record<string, number> = {};
-
-  transactions.forEach((t: any) => {
-    totalMoney += t.totalAmount || 0;
-    t.items?.forEach((item: any) => {
-      totalWeight += Number(item.amount) || 0;
-      categoryMap[item.name] = (categoryMap[item.name] || 0) + (Number(item.amount) || 0);
-    });
+  transSnap.docs.forEach(doc => {
+    const data = doc.data();
+    totalMoney += data.totalAmount || 0;
+    data.items?.forEach((item: any) => totalWeight += Number(item.amount) || 0);
   });
 
-  const chartData = Object.keys(categoryMap).map(key => ({
-    name: key,
-    value: categoryMap[key]
-  }));
+  return { 
+    totalMoney, 
+    totalWeight, 
+    totalTransactions: transSnap.size, 
+    totalMembers: membersSnap.size // 👈 อ้างอิงจำนวนคนจริงๆ
+  };
+};
 
-  return { totalMoney, totalWeight, totalTransactions: transactions.length, chartData };
+// 🟢 ใหม่: ระบบนับจำนวนผู้เข้าชมสไตล์ CCTV
+export const handleVisitorAnalytics = async () => {
+  const todayStr = new Date().toLocaleDateString('en-CA');
+  const hasVisited = sessionStorage.getItem('trash_bank_v_2026');
+  const dailyRef = doc(db, 'site_analytics', todayStr);
+  const globalRef = doc(db, 'site_analytics', 'global_stats');
+
+  if (!hasVisited) {
+    try {
+      await Promise.all([
+        setDoc(dailyRef, { visits: increment(1), date: todayStr }, { merge: true }),
+        setDoc(globalRef, { totalVisits: increment(1) }, { merge: true })
+      ]);
+      sessionStorage.setItem('trash_bank_v_2026', 'true');
+    } catch (e) { console.error("Analytics Error:", e); }
+  }
+
+  const [todaySnap, globalSnap] = await Promise.all([getDoc(dailyRef), getDoc(globalRef)]);
+  return {
+    today: todaySnap.exists() ? todaySnap.data().visits || 0 : 0,
+    total: globalSnap.exists() ? globalSnap.data().totalVisits || 0 : 0
+  };
+};
+
+// --- 5. จัดการประชาสัมพันธ์ (PR Management) ---
+
+export interface Announcement {
+  id?: string;
+  title: string;
+  date: string;
+  location: string;
+  details: string;
+  createdAt: any;
+}
+
+export const getAnnouncements = async () => {
+  const q = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+};
+
+export const addAnnouncement = async (data: any) => {
+  return await addDoc(collection(db, 'announcements'), {
+    ...data,
+    createdAt: serverTimestamp()
+  });
+};
+
+export const updateAnnouncement = async (id: string, data: any) => {
+  const docRef = doc(db, 'announcements', id);
+  return await updateDoc(docRef, data);
+};
+
+export const deleteAnnouncement = async (id: string) => {
+  const docRef = doc(db, 'announcements', id);
+  return await deleteDoc(docRef);
 };
