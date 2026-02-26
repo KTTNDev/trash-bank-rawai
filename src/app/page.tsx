@@ -81,19 +81,50 @@ export default function LandingPage() {
         </button>
       </div>
 
-      {/* 2. Navbar */}
-      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex justify-between items-center">
-          <div className="flex items-center gap-2 md:gap-3">
-            <div className="w-9 h-9 md:w-10 md:h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200"><img src="https://rawai-one-map.web.app/styles/logo/logorawairesi.png" alt="" /></div>
-            <span className="font-black text-sm md:text-xl tracking-tighter uppercase">ธนาคารขยะ<span className="text-emerald-600">RAWAI สบายซิตี้</span></span>
-          </div>
-          <div className="flex items-center gap-3">
-            <button onClick={() => router.push('/admin/login')} className="text-slate-400 hover:text-emerald-600 text-[10px] md:text-xs font-black uppercase tracking-widest transition-colors flex items-center gap-1"><Lock className="w-3 h-3" /> Staff</button>
-            <button onClick={() => router.push('/member/login')} className="bg-slate-900 text-white px-4 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase shadow-lg">Login</button>
-          </div>
-        </div>
-      </nav>
+   {/* 2. Navbar: เน้นความคลีนสไตล์ Modern Minimal [cite: 2026-02-26] */}
+<nav className="fixed top-0 w-full z-[100] bg-white/70 backdrop-blur-xl border-b border-slate-100/60">
+  <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-22 flex justify-between items-center">
+    
+    {/* ส่วน Logo: ปรับให้ดูเป็นสัดส่วน [cite: 2026-02-26] */}
+    <div className="flex items-center gap-3 cursor-pointer group" onClick={() => router.push('/')}>
+      <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 p-1.5 group-hover:scale-105 transition-transform duration-300">
+        <img 
+          src="https://rawai-one-map.web.app/styles/logo/logorawairesi.png" 
+          alt="Rawai Logo" 
+          className="w-full h-full object-contain"
+        />
+      </div>
+      <div className="flex flex-col">
+        <span className="font-black text-sm md:text-xl tracking-tight text-slate-900 leading-none uppercase">
+          ธนาคารขยะ<span className="text-emerald-600 ml-1">ดิจิทัล</span>
+        </span>
+        <span className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">
+          Rawai Sabai City
+        </span>
+      </div>
+    </div>
+
+    {/* ส่วนปุ่มกด (CTAs): เรียงตัวสวยงาม [cite: 2026-02-26] */}
+    <div className="flex items-center gap-2 md:gap-6">
+      {/* Staff Button: ดูเรียบง่ายไม่แย่งซีน [cite: 2026-02-26] */}
+      <button 
+        onClick={() => router.push('/admin/login')} 
+        className="hidden sm:flex items-center gap-2 text-slate-400 hover:text-emerald-600 transition-colors text-[10px] font-black uppercase tracking-widest px-3 py-2"
+      >
+        <Lock className="w-3.5 h-3.5" /> Staff
+      </button>
+
+      {/* Login Button: ปุ่มหลักที่โดดเด่น [cite: 2026-02-26] */}
+      <button 
+        onClick={() => router.push('/member/login')} 
+        className="bg-slate-900 text-white px-5 md:px-8 py-2.5 md:py-3.5 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black uppercase tracking-widest shadow-xl shadow-slate-200 hover:bg-emerald-600 hover:shadow-emerald-100 transition-all duration-300 active:scale-95"
+      >
+        Login
+      </button>
+    </div>
+
+  </div>
+</nav>
 
       {/* 3. Hero Section: Quick Access Grid (Compact Version) */}
       <section className="pt-28 pb-12 md:pt-44 md:pb-24 px-4 md:px-6">
@@ -127,37 +158,87 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-{/* 4. Awareness Section: 🟢 ปรับสูตรคำนวณ 725 บาท/ตัน 🟢 [cite: 2026-02-26] */}
-      <section id="impact" className="py-20 bg-slate-900 text-white relative overflow-hidden">
-        <div className="absolute right-0 bottom-0 opacity-5 pointer-events-none"><Landmark className="w-96 h-96" /></div>
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10 text-center lg:text-left">
-          <div className="space-y-8">
-            <h2 className="text-3xl md:text-5xl font-black leading-tight italic">
-              ภารกิจลดงบประมาณ <br/>
-              <span className="text-emerald-400">กำจัดขยะมวลรวม 20,262 ตัน 12 ล้านบาท/ปี</span>
-            </h2>
-            <p className="text-slate-400 text-lg leading-relaxed font-medium">ทุกๆ 1 ตันที่คุณช่วยแยก ช่วยลดภาระงบประมาณเทศบาลได้ <span className="text-white font-black underline">725 บาท</span></p>
-            <div className="grid grid-cols-2 gap-4">
-              {loading ? <><SkeletonCard height="h-28"/><SkeletonCard height="h-28"/></> : <>
-                <div className="bg-white/10 p-6 rounded-[2.5rem] border border-white/5 shadow-inner">
-                  <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2">ประหยัดงบได้แล้ว</p>
-                  <p className="text-2xl md:text-3xl font-black italic">฿{((stats?.totalWeight / 1000) * 725).toLocaleString()}</p>
-                </div>
-                <div className="bg-white/10 p-6 rounded-[2.5rem] border border-white/5 shadow-inner">
-                  <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2">ขยะรีไซเคิลรวม</p>
-                  <p className="text-2xl md:text-3xl font-black italic">{(stats?.totalWeight / 1000).toFixed(1)} ตัน</p>
-                </div>
-              </>}
-            </div>
-          </div>
-          <div className="bg-emerald-600 p-10 md:p-14 rounded-[3.5rem] shadow-2xl relative overflow-hidden group">
-             <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:rotate-12 transition-transform"><Landmark className="w-32 h-32" /></div>
-             <TrendingDown className="w-12 h-12 mb-6 text-white" />
-             <h4 className="text-2xl font-black mb-4">คืนงบสู่ชุมชนราไวย์</h4>
-             <p className="text-emerald-100 font-medium leading-relaxed">ต้นทุนบริหารจัดการขยะ 725 บาท/ตัน ที่เราประหยัดได้ จะเปลี่ยนเป็นทุนพัฒนาสาธารณูปโภคและสุขภาพชาวราไวย์ทุกคน </p>
-          </div>
+{/* 4. Awareness Section: 🟢 ปรับธีมใหม่ High-Impact 725 บาท/ตัน 🟢  */}
+<section id="impact" className="py-24 bg-[#0F172A] text-white relative overflow-hidden">
+  
+  {/* แสงฟุ้งพื้นหลัง (Glow Effects) สไตล์ CCTV */}
+  <div className="absolute top-0 left-0 w-full h-full -z-0 opacity-20 pointer-events-none">
+    <div className="absolute top-[-10%] right-[-10%] w-[45%] h-[60%] rounded-full blur-[120px] bg-emerald-500/30"></div>
+    <div className="absolute bottom-[-10%] left-[-10%] w-[45%] h-[60%] rounded-full blur-[120px] bg-blue-500/20"></div>
+  </div>
+
+  <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">
+    
+    <div className="space-y-10 text-center lg:text-left">
+      <div className="space-y-5">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]">
+          <Sparkles className="w-3.5 h-3.5" /> Economic Impact Analysis
         </div>
-      </section>
+        <h2 className="text-4xl md:text-6xl font-black leading-[1.1] tracking-tight">
+          ภารกิจเพื่อ <br/>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">ราไวย์ที่ยั่งยืน</span>
+        </h2>
+        <p className="text-slate-400 text-lg md:text-xl font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
+          ตำบลราไวย์มีขยะมวลรวมสูงถึง <span className="text-white font-black underline decoration-emerald-500/50">20,262 ตัน/ปี</span> 
+          ใช้งบประมาณจัดการกว่า <span className="text-white font-black underline decoration-emerald-500/50">12 ล้านบาท/ปี</span>  ล้านบาท 
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        {loading ? (
+          <><SkeletonCard height="h-32"/><SkeletonCard height="h-32"/></>
+        ) : (
+          <>
+            {/* การ์ดคำนวณเงินที่ประหยัดได้จากภาษีประชาชน  */}
+            <div className="bg-white/5 backdrop-blur-md p-6 md:p-8 rounded-[2.5rem] border border-white/10 hover:bg-white/10 transition-all group shadow-inner">
+              <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-3">เงินภาษีที่ประหยัดได้</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl md:text-4xl font-black tabular-nums">฿{((stats?.totalWeight / 1000) * 725).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
+              </div>
+            </div>
+            {/* การ์ดปริมาณขยะที่ลดภาระตำบล  */}
+            <div className="bg-white/5 backdrop-blur-md p-6 md:p-8 rounded-[2.5rem] border border-white/10 hover:bg-white/10 transition-all shadow-inner">
+              <p className="text-[10px] font-black text-teal-400 uppercase tracking-widest mb-3">ขยะรีไซเคิลรวม</p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl md:text-4xl font-black tabular-nums">{(stats?.totalWeight / 1000).toFixed(2)}</span>
+                <span className="text-xs font-bold text-slate-500 uppercase">ตัน</span>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+
+    {/* Impact Highlight Card: ใช้ Gradient Emerald-Teal ทรงพลัง  */}
+    <div className="relative group">
+      <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-[3.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+      <div className="relative bg-gradient-to-br from-emerald-600 to-teal-700 p-10 md:p-16 rounded-[3.5rem] shadow-2xl overflow-hidden border border-white/10">
+         {/* ไอคอน Landmark ขนาดใหญ่เป็นลายน้ำพื้นหลัง  */}
+         <div className="absolute top-0 right-0 p-12 opacity-10 -rotate-12 translate-x-10 -translate-y-10 pointer-events-none">
+           <Landmark className="w-64 h-64 text-white" />
+         </div>
+         
+         <div className="relative z-10 space-y-8">
+            <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white shadow-xl border border-white/10">
+              <TrendingDown className="w-8 h-8" />
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-3xl md:text-4xl font-black text-white leading-tight">คืนงบประมาณ <br/>สู่การพัฒนาตำบล</h3>
+              <p className="text-emerald-50/90 font-medium leading-relaxed text-lg md:text-xl">
+                ต้นทุนบริหารจัดการ <span className="text-white font-black underline decoration-white/30">725 บาท/ตัน</span> ที่ประหยัดได้ 
+                จะถูกเปลี่ยนเป็นทุนพัฒนาสาธารณูปโภค และคุณภาพชีวิตชาวราไวย์ทุกคน 
+              </p>
+            </div>
+            <div className="pt-2">
+               <div className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900/40 rounded-2xl border border-white/10 text-white font-black text-xs uppercase tracking-widest">
+                 Rawai Smart Economy
+               </div>
+            </div>
+         </div>
+      </div>
+    </div>
+  </div>
+</section>
       {/* 5. Success Stats: 🟢 แก้บั๊กครัวเรือน (อ้างอิง Member จริง) 🟢 */}
       <section id="stats" className="py-16 md:py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
