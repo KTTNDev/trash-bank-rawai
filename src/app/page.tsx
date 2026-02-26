@@ -108,20 +108,13 @@ export default function LandingPage() {
     <div className="flex items-center gap-1 md:gap-6">
       
       {/* Staff Button: โชว์ตลอด แต่ปรับขนาดให้เล็กลงในมือถือ */}
-      <button 
-        onClick={() => router.push('/admin/login')} 
-        className="flex items-center gap-1.5 text-slate-400 hover:text-emerald-600 transition-colors text-[9px] md:text-[10px] font-black uppercase tracking-widest px-2 md:px-3 py-2"
-      >
-        <Lock className="w-3 h-3 md:w-3.5 md:h-3.5" /> 
-        <span className="hidden xs:block">Staff</span>
-      </button>
 
       {/* Login Button: ปุ่มหลักที่โดดเด่น */}
       <button 
-        onClick={() => router.push('/member/login')} 
+        onClick={() => router.push('/admin/login')} 
         className="bg-slate-900 text-white px-4 md:px-8 py-2 md:py-3.5 rounded-lg md:rounded-2xl text-[9px] md:text-xs font-black uppercase tracking-widest shadow-lg shadow-slate-200 hover:bg-emerald-600 hover:shadow-emerald-100 transition-all duration-300 active:scale-95"
       >
-        Login
+        Staff
       </button>
 
     </div>
