@@ -133,7 +133,7 @@ export default function LandingPage() {
         <div className="absolute right-0 bottom-0 opacity-5 pointer-events-none"><Landmark className="w-96 h-96" /></div>
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10 text-center lg:text-left">
           <div className="space-y-8">
-            <h2 className="text-3xl md:text-5xl font-black leading-tight">ภารกิจลดงบประมาณ <br/><span className="text-emerald-400">กำจัดขยะ 90 ล้านบาท/ปี</span></h2>
+            <h2 className="text-3xl md:text-5xl font-black leading-tight">ภารกิจลดงบประมาณ <br/><span className="text-emerald-400">กำจัดขยะ 20,2562.73 ตัน 12 ล้านบาท/ปี</span></h2>
             <p className="text-slate-400 text-lg leading-relaxed font-medium">ทุกๆ 1 กิโลกรัมที่ท่านนำมาฝาก ช่วยลดงบเทศบาลได้ 4.50 บาท</p>
             <div className="grid grid-cols-2 gap-4">
               {loading ? <><SkeletonCard height="h-28"/><SkeletonCard height="h-28"/></> : <>
