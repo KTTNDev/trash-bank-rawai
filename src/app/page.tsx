@@ -102,7 +102,7 @@ export default function LandingPage() {
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-[10px] font-black uppercase"><Sparkles className="w-3.5 h-3.5" /> Sustainable Rawai Sabai City</div>
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight text-slate-900">ธนาคารขยะ <br/><span className="text-transparent bg-clip-text italic" style={{ backgroundImage: brandGradient }}>ดิจิทัล</span> ราไวย์</h1>
-              <p className="text-slate-500 text-sm md:text-lg font-medium max-w-xl mx-auto lg:mx-0">คืนงบประมาณกำจัดขยะ 20,2562.73 ตัน/ปี งบประมาณปีละ 12 ล้านบาท กลับสู่การพัฒนาตำบลอย่างยั่งยืน</p>
+              <p className="text-slate-500 text-sm md:text-lg font-medium max-w-xl mx-auto lg:mx-0">คืนงบประมาณกำจัดขยะ 20,262.73 ตัน/ปี งบประมาณปีละ 12 ล้านบาท กลับสู่การพัฒนาตำบลอย่างยั่งยืน</p>
             </div>
 
             {/* Quick Access Menu: ปรับความสูง Compact */}
@@ -133,7 +133,7 @@ export default function LandingPage() {
         <div className="absolute right-0 bottom-0 opacity-5 pointer-events-none"><Landmark className="w-96 h-96" /></div>
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10 text-center lg:text-left">
           <div className="space-y-8">
-            <h2 className="text-3xl md:text-5xl font-black leading-tight">ภารกิจลดงบประมาณ <br/><span className="text-emerald-400">กำจัดขยะ 20,2562.73 ตัน 12 ล้านบาท/ปี</span></h2>
+            <h2 className="text-3xl md:text-5xl font-black leading-tight">ภารกิจลดงบประมาณ <br/><span className="text-emerald-400">กำจัดขยะ 20,262.73 ตัน 12 ล้านบาท/ปี</span></h2>
             <p className="text-slate-400 text-lg leading-relaxed font-medium">ทุกๆ 1 กิโลกรัมที่ท่านนำมาฝาก ช่วยลดงบเทศบาลได้ 4.50 บาท</p>
             <div className="grid grid-cols-2 gap-4">
               {loading ? <><SkeletonCard height="h-28"/><SkeletonCard height="h-28"/></> : <>
