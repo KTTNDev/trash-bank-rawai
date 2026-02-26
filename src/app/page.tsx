@@ -114,7 +114,7 @@ export default function LandingPage() {
         onClick={() => router.push('/admin/login')} 
         className="bg-slate-900 text-white px-4 md:px-8 py-2 md:py-3.5 rounded-lg md:rounded-2xl text-[9px] md:text-xs font-black uppercase tracking-widest shadow-lg shadow-slate-200 hover:bg-emerald-600 hover:shadow-emerald-100 transition-all duration-300 active:scale-95"
       >
-        Staff
+        เจ้าหน้าที่
       </button>
 
     </div>
