@@ -120,7 +120,7 @@ export default function LandingPage() {
   className="flex items-center gap-1 text-slate-400 hover:text-emerald-600 px-2"
 >
   <Lock className="w-4 h-4" />
-  <span className="hidden xs:inline-block text-[9px] font-black uppercase">Staff</span>
+  <span className=" xs:inline-block text-[9px] font-black uppercase">Staff</span>
 </button>
     </div>
 
