@@ -154,7 +154,7 @@ export default function LandingPage() {
              <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:rotate-12 transition-transform"><Landmark className="w-32 h-32" /></div>
              <TrendingDown className="w-12 h-12 mb-6 text-white" />
              <h4 className="text-2xl font-black mb-4">คืนงบสู่ชุมชนราไวย์</h4>
-             <p className="text-emerald-100 font-medium leading-relaxed">ต้นทุนบริหารจัดการขยะ 725 บาท/ตัน ที่เราประหยัดได้ จะเปลี่ยนเป็นทุนพัฒนาสาธารณูปโภคและสุขภาพชาวราไวย์ทุกคน [cite: 2026-02-26]</p>
+             <p className="text-emerald-100 font-medium leading-relaxed">ต้นทุนบริหารจัดการขยะ 725 บาท/ตัน ที่เราประหยัดได้ จะเปลี่ยนเป็นทุนพัฒนาสาธารณูปโภคและสุขภาพชาวราไวย์ทุกคน </p>
           </div>
         </div>
       </section>
