@@ -134,7 +134,7 @@ export default function LandingPage() {
           <div className="space-y-8">
             <h2 className="text-3xl md:text-5xl font-black leading-tight italic">
               ภารกิจลดงบประมาณ <br/>
-              <span className="text-emerald-400">กำจัดขยะมวลรวม 20,262 ตัน</span>
+              <span className="text-emerald-400">กำจัดขยะมวลรวม 20,262 ตัน 12 ล้านบาท/ปี</span>
             </h2>
             <p className="text-slate-400 text-lg leading-relaxed font-medium">ทุกๆ 1 ตันที่คุณช่วยแยก ช่วยลดภาระงบประมาณเทศบาลได้ <span className="text-white font-black underline">725 บาท</span></p>
             <div className="grid grid-cols-2 gap-4">
