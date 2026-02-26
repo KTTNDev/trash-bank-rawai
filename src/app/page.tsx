@@ -81,13 +81,13 @@ export default function LandingPage() {
         </button>
       </div>
 
-   {/* 2. Navbar: เน้นความคลีนสไตล์ Modern Minimal [cite: 2026-02-26] */}
+  {/* 2. Navbar: Modern Minimal Responsive [cite: 2026-02-26] */}
 <nav className="fixed top-0 w-full z-[100] bg-white/70 backdrop-blur-xl border-b border-slate-100/60">
   <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-22 flex justify-between items-center">
     
-    {/* ส่วน Logo: ปรับให้ดูเป็นสัดส่วน [cite: 2026-02-26] */}
-    <div className="flex items-center gap-3 cursor-pointer group" onClick={() => router.push('/')}>
-      <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 p-1.5 group-hover:scale-105 transition-transform duration-300">
+    {/* ส่วน Logo: Rawai Digital Waste Bank */}
+    <div className="flex items-center gap-2 md:gap-3 cursor-pointer group" onClick={() => router.push('/')}>
+      <div className="w-9 h-9 md:w-12 md:h-12 bg-white rounded-xl md:rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 p-1.5 group-hover:scale-105 transition-transform duration-300">
         <img 
           src="https://rawai-one-map.web.app/styles/logo/logorawairesi.png" 
           alt="Rawai Logo" 
@@ -95,35 +95,36 @@ export default function LandingPage() {
         />
       </div>
       <div className="flex flex-col">
-        <span className="font-black text-sm md:text-xl tracking-tight text-slate-900 leading-none uppercase">
+        <span className="font-black text-[12px] md:text-xl tracking-tight text-slate-900 leading-none uppercase">
           ธนาคารขยะ<span className="text-emerald-600 ml-1">ดิจิทัล</span>
         </span>
-        <span className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">
+        <span className="text-[7px] md:text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] md:tracking-[0.2em] mt-0.5 md:mt-1">
           Rawai Sabai City
         </span>
       </div>
     </div>
 
-    {/* ส่วนปุ่มกด (CTAs): เรียงตัวสวยงาม [cite: 2026-02-26] */}
-    <div className="flex items-center gap-2 md:gap-6">
-      {/* Staff Button: ดูเรียบง่ายไม่แย่งซีน [cite: 2026-02-26] */}
+    {/* ส่วนปุ่มกด (CTAs) */}
+    <div className="flex items-center gap-1 md:gap-6">
+      
+      {/* Staff Button: โชว์ตลอด แต่ปรับขนาดให้เล็กลงในมือถือ */}
       <button 
         onClick={() => router.push('/admin/login')} 
-        className="hidden sm:flex items-center gap-2 text-slate-400 hover:text-emerald-600 transition-colors text-[10px] font-black uppercase tracking-widest px-3 py-2"
+        className="flex items-center gap-1.5 text-slate-400 hover:text-emerald-600 transition-colors text-[9px] md:text-[10px] font-black uppercase tracking-widest px-2 md:px-3 py-2"
       >
-        <Lock className="w-3.5 h-3.5" /> Staff
+        <Lock className="w-3 h-3 md:w-3.5 md:h-3.5" /> 
+        <span className="hidden xs:block">Staff</span>
       </button>
 
-      {/* Login Button: ปุ่มหลักที่โดดเด่น [cite: 2026-02-26] */}
-    <button 
-  onClick={() => router.push('/admin/login')} 
-  className="flex items-center gap-1 text-slate-400 hover:text-emerald-600 px-2"
->
-  <Lock className="w-4 h-4" />
-  <span className=" xs:inline-block text-[9px] font-black uppercase">Staff</span>
-</button>
-    </div>
+      {/* Login Button: ปุ่มหลักที่โดดเด่น */}
+      <button 
+        onClick={() => router.push('/member/login')} 
+        className="bg-slate-900 text-white px-4 md:px-8 py-2 md:py-3.5 rounded-lg md:rounded-2xl text-[9px] md:text-xs font-black uppercase tracking-widest shadow-lg shadow-slate-200 hover:bg-emerald-600 hover:shadow-emerald-100 transition-all duration-300 active:scale-95"
+      >
+        Login
+      </button>
 
+    </div>
   </div>
 </nav>
 
