@@ -152,7 +152,7 @@ export default function LandingPage() {
           <h2 className="text-2xl md:text-3xl font-black text-center mb-12 uppercase tracking-tight">ความสำเร็จของโครงการ</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8">
             {loading ? <><div className="col-span-2 md:col-span-1"><SkeletonCard height="h-64"/></div><SkeletonCard height="h-64"/><SkeletonCard height="h-64"/></> : <>
-              <div className="col-span-2 md:col-span-1"><StatItem icon={<ChartBar />} label="ปริมาณขยะสะสม" value={(stats?.totalWeight / 1000).toFixed(1) || '0'} unit="ตัน" color="text-emerald-600" isMain={true} /></div>
+              <div className="col-span-2 md:col-span-1"><StatItem icon={<ChartBar />} label="ช่วยกันลดขยะไปแล้ว" value={(stats?.totalWeight / 1000).toFixed(1) || '0'} unit="ตัน" color="text-emerald-600" isMain={true} /></div>
               <StatItem icon={<BadgeDollarSign />} label="เงินในระบบ" value={stats?.totalMoney?.toLocaleString() || '0'} unit="บาท" color="text-blue-600" />
               {/* 🟢 อ้างอิง Member จริงแล้วครับ 🟢 */}
               <StatItem icon={<Users />} label="ครัวเรือนที่ร่วม" value={stats?.totalMembers || '0'} unit="ราย" color="text-amber-600" />
