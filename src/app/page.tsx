@@ -115,12 +115,12 @@ export default function LandingPage() {
       </button>
 
       {/* Login Button: ปุ่มหลักที่โดดเด่น [cite: 2026-02-26] */}
-      <button 
-        onClick={() => router.push('/member/login')} 
-        className="bg-slate-900 text-white px-5 md:px-8 py-2.5 md:py-3.5 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black uppercase tracking-widest shadow-xl shadow-slate-200 hover:bg-emerald-600 hover:shadow-emerald-100 transition-all duration-300 active:scale-95"
-      >
-        Login
-      </button>
+     <button 
+  onClick={() => router.push('/admin/login')} 
+  className="flex items-center gap-2 text-slate-400 hover:text-emerald-600 transition-colors text-[10px] font-black uppercase tracking-widest px-3 py-2"
+>
+  <Lock className="w-3.5 h-3.5" /> Staff
+</button>
     </div>
 
   </div>
