@@ -85,7 +85,7 @@ export default function LandingPage() {
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex justify-between items-center">
           <div className="flex items-center gap-2 md:gap-3">
-            <div className="w-9 h-9 md:w-10 md:h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200"><Recycle className="w-5 h-5 md:w-6 md:h-6" /></div>
+            <div className="w-9 h-9 md:w-10 md:h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200"><img src="https://rawai-one-map.web.app/styles/logo/logorawairesi.png" alt="" /></div>
             <span className="font-black text-sm md:text-xl tracking-tighter uppercase">ธนาคารขยะ<span className="text-emerald-600">RAWAI สบายซิตี้</span></span>
           </div>
           <div className="flex items-center gap-3">
