@@ -102,7 +102,7 @@ export default function LandingPage() {
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-[10px] font-black uppercase"><Sparkles className="w-3.5 h-3.5" /> Sustainable Rawai Sabai City</div>
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight text-slate-900">ธนาคารขยะ <br/><span className="text-transparent bg-clip-text italic" style={{ backgroundImage: brandGradient }}>ดิจิทัล</span> ราไวย์</h1>
-              <p className="text-slate-500 text-sm md:text-lg font-medium max-w-xl mx-auto lg:mx-0">คืนงบประมาณกำจัดขยะ 90 ล้านบาท กลับสู่การพัฒนาตำบลอย่างยั่งยืน</p>
+              <p className="text-slate-500 text-sm md:text-lg font-medium max-w-xl mx-auto lg:mx-0">คืนงบประมาณกำจัดขยะ 20,2562.73 ตัน/ปี งบประมาณปีละ 12 ล้านบาท กลับสู่การพัฒนาตำบลอย่างยั่งยืน</p>
             </div>
 
             {/* Quick Access Menu: ปรับความสูง Compact */}
